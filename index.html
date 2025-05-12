@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="brand">Mi Portafolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        /* Estilos para el tooltip */
+        .tooltip {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dotted #4b5563;
+            color: #2563eb;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: #1f2937;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+        }
+
+        section {
+            padding: 3rem 1rem;
+        }
+
+        .project-card {
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .about-text p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .skill-item {
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .skill-item:hover {
+            background-color: #e0e7ff;
+            transform: scale(1.1);
+        }
+
+        /* Navbar */
+        #navbar {
+            transition: background-color 0.3s ease;
+        }
+
+        #navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        #navbar .nav-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #navbar ul {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 40;
+        }
+
+        #navbar ul.active {
+            display: flex;
+        }
+
+        #navbar ul li {
+            margin: 0.5rem 0;
+        }
+
+        #navbar ul li a {
+            font-size: 1.1rem;
+            padding: 0.5rem;
+            display: block;
+        }
+
+        #language-switcher {
+            font-size: 1rem;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            width: 80px;
+            height: 40px;
+            touch-action: manipulation;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 100%;
+            height: 3px;
+            background-color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Hero */
+        #home {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+
+        #home h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+        }
+
+        #home p {
+            font-size: 1.1rem;
+        }
+
+        #home .hero-button {
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+        }
+
+        /* About */
+        #about .flex {
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        #about img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 50%;
+        }
+
+        #about .about-text {
+            max-width: 100%;
+        }
+
+        /* Projects */
+        #projects .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        #projects img {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        /* Skills */
+        #skills .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        /* Contact */
+        #contact .contact-link {
+            font-size: 1.5rem;
+        }
+
+        /* Responsive Styles */
+        @media (min-width: 640px) {
+            section {
+                padding: 4rem 2rem;
+            }
+
+            #navbar .container {
+                flex-wrap: nowrap;
+            }
+
+            #navbar ul {
+                display: flex;
+                flex-direction: row;
+                position: static;
+                width: auto;
+                box-shadow: none;
+                padding: 0;
+            }
+
+            #navbar ul li {
+                margin: 0 0.5rem;
+            }
+
+            .hamburger {
+                display: none;
+            }
+
+            #home h1 {
+                font-size: 3.5rem;
+            }
+
+            #home p {
+                font-size: 1.25rem;
+            }
+
+            #about .flex {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            #about img {
+                max-width: 300px;
+            }
+
+            #about .about-text {
+                max-width: 600px;
+            }
+
+            #projects .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            #skills .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #home h1 {
+                font-size: 4.5rem;
+            }
+
+            #home p {
+                font-size: 1.5rem;
+            }
+
+            #projects .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            #skills .grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .tooltip .tooltip-text {
+                width: 300px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar" class="fixed top-0 w-full bg-white shadow-md z-50">
+        <div class="container mx-auto">
+            <h1 class="text-2xl font-bold text-gray-800" data-i18n="brand">Mi Portafolio</h1>
+            <div class="nav-content">
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul>
+                    <li><a href="#home" class="text-gray-600 hover:text-blue-500" data-i18n="nav_home">Inicio</a></li>
+                    <li><a href="#about" class="text-gray-600 hover:text-blue-500" data-i18n="nav_about">Sobre Mí</a></li>
+                    <li><a href="#projects" class="text-gray-600 hover:text-blue-500" data-i18n="nav_projects">Proyectos</a></li>
+                    <li><a href="#skills" class="text-gray-600 hover:text-blue-500" data-i18n="nav_skills">Habilidades</a></li>
+                    <li><a href="#contact" class="text-gray-600 hover:text-blue-500" data-i18n="nav_contact">Contacto</a></li>
+                </ul>
+                <select id="language-switcher" class="border rounded bg-white">
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                    <option value="de">DE</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+        <div class="text-center">
+            <h1 class="text-5xl font-bold mb-4 hero-title" data-i18n="hero_title">¡Hola, soy Samuel!</h1>
+            <p class="text-xl mb-6 hero-subtitle" data-i18n="hero_subtitle">Desarrollador Full-Stack | Especialista en Soluciones Web</p>
+            <a href="#projects" class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hero-button" data-i18n="hero_button">Ver Proyectos</a>
+        </div>
+    </section>
+
+    <section id="about" class="container mx-auto">
+        <h2 class="text-4xl font-bold text-center mb-12" data-i18n="about_heading">Sobre Mí</h2>
+        <div class="flex items-center justify-center gap-8">
+            <div class="p-4">
+                <img src="foto1.jpg" alt="Foto de Samuel" class="about-image" />
+            </div>
+            <div class="p-4 about-text">
+                <div class="space-y-6">
+                    <p class="text-lg text-gray-700" data-i18n="about_p1">
+                        ¡Hola! 👋 Soy Samuel, un apasionado de la tecnología y adicto a los retos lógicos. Desde pequeño desarmaba código con CheatEngine y montaba mis propios servidores de Metin2 antes de cumplir los 16. La curiosidad y el “¿y si…?” corren por mis venas.
+                    </p>
+                    <p class="text-lg text-gray-700" data-i18n="about_p2">
+                        Mi aventura me llevó a Alemania a los 21, donde aprendí mil cosas trabajando en hoteles y restaurantes. Pero mi corazón latía con fuerza por el código, así que en 2021 di un giro total: me formé en Desarrollo de Aplicaciones Multiplataforma (<span class="tooltip">DAM<span class="tooltip-text">
+                            Ciclo formativo de 3 años donde se aprende a desarrollar aplicaciones para móviles, web y escritorio, con tecnologías como Java, JavaScript, bases de datos (MySQL, SQLite) y frameworks como Spring o Android Studio. Incluye módulos de fundamentos, bases de datos, programación en Java, C#, Python, interfaces con Swing, desarrollo Android, empresa e inglés técnico. El proyecto final consistió en participar en XREATE, un proyecto VR en Unity en C# junto a varios institutos de la UE.
+                        </span></span>) y descubrí que cualquier idea puede convertirse en algo real con la programación.
+                    </p>
+                    <p class="text-lg text-gray-700" data-i18n="about_p3">
+                        Durante mis prácticas en BGI Group creé soluciones reales para empresas locales: un bot de WhatsApp que agiliza la atención al cliente y la app Sport-Match para el Radisson Blu. Cada proyecto es un puzzle infinitamente adictivo.
+                    </p>
+                    <p class="text-lg text-gray-700" data-i18n="about_p4">
+                        ¿Qué me diferencia? 🔥 Soy autodidacta de nacimiento: aprendo rompiendo y recomponiendo. 🤖 Utilizo la IA para acelerar mi flujo de trabajo y experimentar sin miedo al error. 💡
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="bg-gray-100">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-8" data-i18n="projects_heading">Proyectos</h2>
+            <div class="grid">
+                <div class="project-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold flex items-center" data-i18n="project1_title">
+                        <i class="fab fa-whatsapp text-green-500 mr-2"></i> Bot WhatsApp
+                    </h3>
+                    <img src="bot.jpg" alt="Bot WhatsApp" class="rounded mb-4" />
+                    <p class="text-gray-600" data-i18n="project1_desc">
+                        El bot de WhatsApp permite a los clientes de una empresa solicitar citas fácilmente a través de WhatsApp y al personal gestionarlas desde un panel web, enviando confirmaciones y recordatorios automáticos. Con login individual para que cada empresa gestione sus citas y clientes por separado.
+                    </p>
+                    <img src="bot1.jpg" alt="Bot WhatsApp" class="rounded mb-4" />
+                    <p class="text-gray-600 font-semibold mt-2" data-i18n="project1_tech">
+                        Tecnologías: Node.js, Express, whatsapp-web.js, Socket.io
+                    </p>
+                    <p class="text-gray-600 mt-2" data-i18n="project1_note">
+                        Este proyecto está en un repositorio privado de GitHub y lo mostraré en una entrevista, pero no está disponible para el público.
+                    </p>
+                </div>
+                <div class="project-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold flex items-center" data-i18n="project2_title">
+                        <i class="fas fa-futbol text-red-500 mr-2"></i> Sport-Match
+                    </h3>
+                    <img src="sport.jpg" alt="Sport Match" class="rounded mb-4" />
+                    <p class="text-gray-600" data-i18n="project2_desc">
+                        App deportiva para hoteles que permite a los huéspedes crear y unirse a partidos en tiempo real según deporte y horario. <strong><a href="https://hotel-frontend-gamma-nine.vercel.app/" target="_blank" rel="noopener noreferrer">Probar aquí (Hotel code: Radisson)</a></strong> Con login independiente para que cada hotel gestione sus propios usuarios y partidos.
+                    </p>
+                    <img src="sport1.jpg" alt="Sport Match" class="rounded mb-4" />
+                    <p class="text-gray-600 mt-2" data-i18n="project2_note">
+                        Este proyecto está en un repositorio privado de GitHub y lo mostraré en una entrevista, pero no está disponible para el público.
+                    </p>
+                    <p class="text-gray-600 font-semibold mt-2" data-i18n="project2_tech">
+                        Tecnologías: React, Tailwind CSS, Node.js, Express, Socket.io, PostgreSQL
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="container mx-auto">
+        <h2 class="text-4xl font-bold text-center mb-8" data-i18n="skills_heading">Habilidades</h2>
+        <div class="grid">
+            <div class="skill-item text-center p-4 bg-white rounded-lg shadow-md"><p>JavaScript</p></div>
+            <div class="skill-item text-center p-4 bg-white rounded-lg shadow-md"><p>React</p></div>
+            <div class="skill-item text-center p-4 bg-white rounded-lg shadow-md"><p>Node.js</p></div>
+            <div class="skill-item text-center p-4 bg-white rounded-lg shadow-md"><p>Express</p></div>
+            <div class="skill-item text-center p-4 bg-white rounded-lg shadow-md"><p>MySQL</p></div>
+            <div class="skill-item text-center p-4 bg-white rounded-lg shadow-md"><p>Python</p></div>
+            <div class="skill-item text-center p-4 bg-white rounded-lg shadow-md"><p>Java</p></div>
+            <div class="skill-item text-center p-4 bg-white rounded-lg shadow-md"><p>PostgreSQL</p></div>
+            <div class="skill-item text-center p-4 bg-white rounded-lg shadow-md"><p>Socket.io</p></div>
+            <div class="skill-item text-center p-4 bg-white rounded-lg shadow-md"><p>TypeScript</p></div>
+            <div class="skill-item text-center p-4 bg-white rounded-lg shadow-md"><p>Tailwind CSS</p></div>
+        </div>
+    </section>
+
+    <section id="contact" class="bg-gray-100 py-12">
+        <h2 class="text-4xl font-bold text-center mb-8" data-i18n="contact_heading">Contacto</h2>
+        <div class="flex justify-center space-x-6 text-2xl text-gray-700 mb-8">
+            <a href="mailto:your.email@example.com" class="hover:text-blue-500 contact-link" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/samueldeniz" target="_blank" class="hover:text-blue-500 contact-link" title="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/samueldenizgalvan" target="_blank" class="hover:text-blue-500 contact-link" title="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+        <div class="text-center">
+            <a href="CV_samuel.pdf" download="CV_samuel.pdf" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" data-i18n="download_cv">Descargar CV</a>
+        </div>
+    </section>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.from("#navbar", {
+            opacity: 0,
+            y: -50,
+            duration: 1,
+            ease: "bounce.out"
+        });
+        gsap.from(".hero-title", {
+            opacity: 0,
+            y: 50,
+            duration: 1,
+            delay: 0.5
+        });
+        gsap.from(".hero-subtitle", {
+            opacity: 0,
+            y: 50,
+            duration: 1,
+            delay: 0.7
+        });
+        gsap.from(".hero-button", {
+            opacity: 0,
+            scale: 0.8,
+            rotation: 360,
+            duration: 1,
+            delay: 1,
+            ease: "elastic.out(1,0.5)"
+        });
+        gsap.to("#home", {
+            opacity: 0.95,
+            duration: 3,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
+
+        gsap.from(".about-image", {
+            scrollTrigger: {
+                trigger: "#about",
+                start: "top 80%",
+                toggleActions: "play none none none"
+            },
+            opacity: 0,
+            x: -100,
+            scale: 0.8,
+            rotation: 360,
+            duration: 1,
+            ease: "back.out(1.7)"
+        });
+        gsap.from(".about-text", {
+            scrollTrigger: {
+                trigger: "#about",
+                start: "top 80%",
+                toggleActions: "play none none none"
+            },
+            opacity: 0,
+            x: 100,
+            duration: 1
+        });
+        gsap.utils.toArray(".about-text p").forEach((p, i) => {
+            gsap.from(p, {
+                scrollTrigger: {
+                    trigger: "#about",
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                opacity: 0,
+                y: 20,
+                duration: 0.8,
+                delay: i * 0.3
+            });
+        });
+
+        gsap.utils.toArray(".project-card").forEach(card => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                opacity: 0,
+                y: 50,
+                duration: 0.8
+            });
+            gsap.from(card.querySelector("i"), {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                opacity: 0,
+                scale: 0,
+                duration: 0.5,
+                ease: "bounce.out"
+            });
+        });
+
+        gsap.utils.toArray(".skill-item").forEach(skill => {
+            gsap.from(skill, {
+                scrollTrigger: {
+                    trigger: skill,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                opacity: 0,
+                scale: 0.8,
+                rotationY: 360,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+        });
+
+        gsap.from(".contact-link", {
+            scrollTrigger: {
+                trigger: "#contact",
+                start: "top 80%",
+                toggleActions: "play none none none"
+            },
+            opacity: 0,
+            y: 20,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "bounce.out"
+        });
+
+        // Hamburger menu toggle
+        document.querySelector('.hamburger').addEventListener('click', function() {
+            this.classList.toggle('active');
+            document.querySelector('#navbar ul').classList.toggle('active');
+        });
+    </script>
+
+    <script>
+        const translations = {
+            es: {
+                brand: "Mi Portafolio",
+                nav_home: "Inicio",
+                nav_about: "Sobre Mí",
+                nav_projects: "Proyectos",
+                nav_skills: "Habilidades",
+                nav_contact: "Contacto",
+                hero_title: "¡Hola, soy Samuel!",
+                hero_subtitle: "Desarrollador Full-Stack",
+                hero_button: "Ver Proyectos",
+                about_heading: "Sobre Mí",
+                about_p1: "¡Hola! 👋 Soy Samuel, un apasionado de la tecnología y adicto a los retos lógicos. Desde pequeño desarmaba código con CheatEngine y montaba mis propios servidores de Metin2 antes de cumplir los 16. La curiosidad y el “¿y si…?” corren por mis venas.",
+                about_p2: `Mi aventura me llevó a Alemania a los 21, donde aprendí mil cosas trabajando en hoteles y restaurantes. Pero mi corazón latía con fuerza por el código, así que en 2021 di un giro total: me formé en Desarrollo de Aplicaciones Multiplataforma (<span class="tooltip">DAM<span class="tooltip-text">
+      Ciclo formativo de 3 años donde se aprende a desarrollar aplicaciones para móviles, web y escritorio, con tecnologías como Java, JavaScript, bases de datos (MySQL, SQLite) y frameworks como Spring o Android Studio. Incluye módulos de fundamentos, bases de datos, programación en Java, C#, Python, interfaces con Swing, desarrollo Android, empresa e inglés técnico. El proyecto final consistió en participar en XREATE, un proyecto VR en Unity en C# junto a varios institutos de la UE.
+      </span></span>) y descubrí que cualquier idea puede convertirse en algo real con la programación.`,
+                about_p3: "Durante mis prácticas en BGI Group creé soluciones reales para empresas locales: un bot de WhatsApp que agiliza la atención al cliente y la app Sport-Match para el Radisson Blu. Cada proyecto es un puzzle infinitamente adictivo.",
+                about_p4: "¿Qué me diferencia? 🔥 Soy autodidacta de nacimiento: aprendo rompiendo y recomponiendo. 🤖 Utilizo la IA para acelerar mi flujo de trabajo y experimentar sin miedo al error. 💡",
+                projects_heading: "Proyectos",
+                project1_title: "Bot WhatsApp",
+                project1_desc: "El bot de WhatsApp permite a los clientes de una empresa solicitar citas fácilmente a través de WhatsApp y al personal gestionarlas desde un panel web, enviando confirmaciones y recordatorios automáticos. Con login individual para que cada empresa gestione sus citas y clientes por separado.",
+                project1_tech: "Tecnologías: Node.js, Express, whatsapp-web.js, Socket.io",
+                project1_note: "Este proyecto está en un repositorio privado de GitHub y lo mostraré en una entrevista, pero no está disponible para el público.",
+                project2_title: "Sport-Match",
+                project2_desc: `App deportiva para hoteles que permite a los huéspedes crear y unirse a partidos en tiempo real según deporte y horario. <strong><a href="https://hotel-frontend-gamma-nine.vercel.app/" target="_blank" rel="noopener noreferrer">Probar aquí(Hotel code: Radisson)</a></strong> Con login independiente para que cada hotel gestione sus propios usuarios y partidos.`,
+                project2_tech: "Tecnologías: React, Tailwind CSS, Node.js, Express, Socket.io, PostgreSQL",
+                skills_heading: "Habilidades",
+                contact_heading: "Contacto",
+                download_cv: "Descargar CV"
+            },
+            en: {
+                brand: "My Portfolio",
+                nav_home: "Home",
+                nav_about: "About",
+                nav_projects: "Projects",
+                nav_skills: "Skills",
+                nav_contact: "Contact",
+                hero_title: "Hi, I’m Samuel!",
+                hero_subtitle: "Full-Stack Developer",
+                hero_button: "View Projects",
+                about_heading: "About Me",
+                about_p1: "Hi! 👋 I’m Samuel, a tech enthusiast and addicted to logical challenges. Since I was a child I dismantled code with CheatEngine and set up my own Metin2 servers before turning 16. Curiosity and “what if…” run in my veins.",
+                about_p2: `My adventure took me to Germany at 21, where I learned a lot working in hotels and restaurants. But my heart beat for code, so in 2021 I made a complete pivot: I studied Multiplatform Application Development (<span class="tooltip">DAM<span class="tooltip-text">
+      A 3-year advanced program where you learn to develop mobile, web, and desktop applications using technologies like Java, JavaScript, databases (MySQL, SQLite), and frameworks like Spring or Android Studio. Covers modules on fundamentals, databases, programming with Java, C#, Python, user interfaces with Swing, Android development, entrepreneurship and technical English. The final project involved participating in the XREATE VR project built in Unity with C# alongside multiple EU institutes.
+      </span></span>) and discovered that any idea can become real with programming.`,
+                about_p3: "During my internship at BGI Group I built real solutions for local companies: a WhatsApp bot that streamlines customer service and the Sport-Match app for Radisson Blu. Every project is an infinitely addictive puzzle.",
+                about_p4: "What sets me apart? 🔥 I’m self-taught from birth: I learn by breaking and reassembling. 🤖 I leverage AI to speed up my workflow and experiment without fear of failure. 💡",
+                projects_heading: "Projects",
+                project1_title: "WhatsApp Bot",
+                project1_desc: "The WhatsApp bot lets a company’s customers easily book appointments via WhatsApp and lets staff manage them from a web panel, sending automatic confirmations and reminders. Each company gets its own login so they manage their appointments and clients separately.",
+                project1_tech: "Tech: Node.js, Express, whatsapp-web.js, Socket.io",
+                project1_note: "This project lives in a private GitHub repo and I’ll demo it in an interview; it’s not public.",
+                project2_title: "Sport-Match",
+                project2_desc: `A sports app for hotels that lets guests create and join matches in real time by sport and time slot. <strong><a href="https://hotel-frontend-gamma-nine.vercel.app/" target="_blank" rel="noopener noreferrer">Try here(Hotel code: Radisson)</a></strong> Each hotel has its own login so they manage users and matches independently.`,
+                project2_tech: "Tech: React, Tailwind CSS, Node.js, Express, Socket.io, PostgreSQL",
+                project2_note: "This project lives in a private GitHub repo and I’ll demo it in an interview; it’s not public.",
+                skills_heading: "Skills",
+                contact_heading: "Contact",
+                download_cv: "Download CV"
+            },
+            de: {
+                brand: "Mein Portfolio",
+                nav_home: "Startseite",
+                nav_about: "Über mich",
+                nav_projects: "Projekte",
+                nav_skills: "Fähigkeiten",
+                nav_contact: "Kontakt",
+                hero_title: "Hallo, ich bin Samuel!",
+                hero_subtitle: "Full-Stack-Entwickler",
+                hero_button: "Projekte ansehen",
+                about_heading: "Über mich",
+                about_p1: "Hallo! 👋 Ich bin Samuel, ein Technik-Enthusiast und süchtig nach logischen Herausforderungen. Seit meiner Kindheit habe ich mit CheatEngine Code zerlegt und meine eigenen Metin2-Server aufgebaut, noch bevor ich 16 wurde. Neugier und „Was wäre wenn…?“ liegen mir im Blut.",
+                about_p2: `Mit 21 verschlug es mich nach Deutschland, wo ich in Hotels und Restaurants viel gelernt habe. Aber mein Herz schlug fürs Coden, also startete ich 2021 neu: Ich studierte Multiplattform-Anwendungsentwicklung (<span class="tooltip">DAM<span class="tooltip-text">
+      Ein 3-jähriges Fortbildungsprogramm, in dem man lernt, Anwendungen für Mobilgeräte, Web und Desktop zu entwickeln, mit Technologien wie Java, JavaScript, Datenbanken (MySQL, SQLite) und Frameworks wie Spring oder Android Studio. Beinhaltet Module zu Grundlagen, Datenbanken, Programmierung mit Java, C#, Python, Benutzeroberflächen mit Swing, Android-Entwicklung, Unternehmensgründung und technischem Englisch. Das Abschlussprojekt bestand in der Teilnahme am XREATE VR-Projekt in Unity mit C# gemeinsam mit mehreren EU-Instituten.
+      </span></span>) und erkannte, dass jede Idee durch Programmierung Realität werden kann.`,
+                about_p3: "Während meines Praktikums bei BGI Group entwickelte ich echte Lösungen für lokale Firmen: einen WhatsApp-Bot zur Optimierung des Kundenservice und die Sport-Match-App für das Radisson Blu. Jedes Projekt ist ein unendlich süchtig machendes Puzzle.",
+                about_p4: "Was mich unterscheidet? 🔥 Ich bin Autodidakt von Geburt an: Ich lerne, indem ich Dinge auseinandernimme und wieder zusammensetze. 🤖 Ich nutze KI, um meinen Workflow zu beschleunigen und ohne Angst vor Fehlern zu experimentieren. 💡",
+                projects_heading: "Projekte",
+                project1_title: "WhatsApp-Bot",
+                project1_desc: "Der WhatsApp-Bot ermöglicht es Kunden eines Unternehmens, Termine über WhatsApp zu buchen, und lässt das Personal diese über ein Web-Panel verwalten, inklusive automatischer Bestätigungen und Erinnerungen.",
+                project1_tech: "Technologien: Node.js, Express, whatsapp-web.js, Socket.io",
+                project1_note: "Dieses Projekt befindet sich in einem privaten GitHub-Repository und wird in einem Vorstellungsgespräch gezeigt, ist jedoch nicht öffentlich verfügbar.",
+                project2_title: "Sport-Match",
+                project2_desc: `Eine Sport-App für Hotels, mit der Gäste in Echtzeit Partien nach Sportart und Uhrzeit erstellen und beitreten können. <strong><a href="https://hotel-frontend-gamma-nine.vercel.app/" target="_blank" rel="noopener noreferrer">Hier ausprobieren(Hotel code: Radisson)</a></strong> Mit individuellem Login, damit jedes Hotel seine Nutzer und Partien selbst verwaltet.`,
+                project2_tech: "Technologien: React, Tailwind CSS, Node.js, Express, Socket.io, PostgreSQL",
+                project2_note: "Dieses Projekt befindet sich in einem privaten GitHub-Repository und wird in einem Vorstellungsgespräch gezeigt, ist jedoch nicht öffentlich verfügbar.",
+                skills_heading: "Fähigkeiten",
+                contact_heading: "Kontakt",
+                download_cv: "Lebenslauf herunterladen"
+            }
+        };
+
+        function applyTranslations(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                const key = el.getAttribute("data-i18n");
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            localStorage.setItem("lang", lang);
+            document.getElementById("language-switcher").value = lang;
+        }
+
+        document.getElementById("language-switcher").addEventListener("change", e => applyTranslations(e.target.value));
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const saved = localStorage.getItem("lang");
+            const browser = navigator.language.slice(0,2);
+            const lang = saved || (["es","en","de"].includes(browser) ? browser : "es");
+            applyTranslations(lang);
+        });
+    </script>
+
+    <a href="#home" class="fixed bottom-5 right-5 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 z-50" title="Volver arriba">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</body>
+</html>
